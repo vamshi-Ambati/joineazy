@@ -24,7 +24,7 @@ const Navbar = () => {
               </>
             )}
             {role === "admin" && <Link to="/admin/dashboard">Admin</Link>}
-            <Link to="/assignments">Assignments</Link>
+            {/* <Link to="/assignments">Assignments</Link> */}
             <button
               onClick={handleLogout}
               className="bg-white text-blue-600 px-3 py-1 rounded-lg"

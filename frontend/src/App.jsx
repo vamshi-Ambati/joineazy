@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import GroupManagement from "./pages/GroupManagement";
-import Assignments from "./pages/Assignments";
+// import Assignments from "./pages/Assignments";
 import Navbar from "./components/Navbar";
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/group" element={<GroupManagement />} />
-        <Route path="/assignments" element={<Assignments />} />
+        {/* <Route path="/assignments" element={<Assignments />} /> */}
       </Routes>
     </Router>
   );
