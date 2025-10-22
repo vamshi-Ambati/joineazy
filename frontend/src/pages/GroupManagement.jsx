@@ -3,15 +3,17 @@ import apiUrl from "../apiUrl";
 
 const GroupManagement = () => {
   const [groupName, setGroupName] = useState("");
-  const [members, setMembers] = useState([]);
   const [groups, setGroups] = useState([]);
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetchGroups();
+    if (token) fetchGroups();
   }, [token]);
 
+  // -------------------------
+  // Fetch all groups for the logged-in user
+  // -------------------------
   const fetchGroups = async () => {
     try {
       const res = await fetch(`${apiUrl}/groups/get-groups-by-user`, {
@@ -25,8 +27,12 @@ const GroupManagement = () => {
     }
   };
 
+  // -------------------------
+  // Create a new group
+  // -------------------------
   const handleCreateGroup = async () => {
     if (!groupName) return alert("Enter a group name");
+
     try {
       const res = await fetch(`${apiUrl}/groups/create-group`, {
         method: "POST",
@@ -36,17 +42,24 @@ const GroupManagement = () => {
         },
         body: JSON.stringify({ name: groupName }),
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to create group");
-      else fetchGroups();
+
+      setGroups([...groups, data.group]); // ✅ push the new group correctly
+      setGroupName("");
     } catch (err) {
       alert(err.message);
     }
   };
 
+  // -------------------------
+  // Add a member to a group
+  // -------------------------
   const handleAddMember = async (groupId) => {
     const email = prompt("Enter member email:");
     if (!email) return;
+
     try {
       const res = await fetch(`${apiUrl}/groups/add-member`, {
         method: "POST",
@@ -56,15 +69,11 @@ const GroupManagement = () => {
         },
         body: JSON.stringify({ member_email: email, group_id: groupId }),
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to add member");
-      else fetchGroups();
-      // setGroups(
-      //   groups && groups.map((g) =>
-      //     g.id === groupId ? { ...g, members: [...g.members, data.email] } : g
-      //   )
-      // );
-      
+
+      fetchGroups(); // refresh groups after adding member
     } catch (err) {
       alert(err.message);
     }
@@ -73,6 +82,7 @@ const GroupManagement = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Group Management</h2>
+
       <div className="mb-4 flex gap-2">
         <input
           type="text"
@@ -88,6 +98,7 @@ const GroupManagement = () => {
           Create Group
         </button>
       </div>
+
       <ul className="space-y-4">
         {groups.map((group) => (
           <li key={group.id} className="border p-4 rounded shadow">
