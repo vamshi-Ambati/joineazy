@@ -38,8 +38,7 @@ const GroupManagement = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to create group");
-      setGroups([...groups, data]);
-      setGroupName("");
+      else fetchGroups();
     } catch (err) {
       alert(err.message);
     }
@@ -59,13 +58,13 @@ const GroupManagement = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to add member");
-
+      else fetchGroups();
       // setGroups(
       //   groups && groups.map((g) =>
       //     g.id === groupId ? { ...g, members: [...g.members, data.email] } : g
       //   )
       // );
-      fetchGroups();
+      
     } catch (err) {
       alert(err.message);
     }
