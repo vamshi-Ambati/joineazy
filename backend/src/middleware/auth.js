@@ -9,14 +9,14 @@ const verifyToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
     if (err) return res.status(400).json({ error: 'UnAuthorized Access' });
-    req.user = payload; // { id, email, role }
+    req.users = payload; // { id, email, role }
     next();
   });
 };
 
 const requireRole = (role) => (req, res, next) => {
-  if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
-  if (req.user.role !== role) return res.status(403).json({ error: 'Forbidden: insufficient role' });
+  if (!req.users) return res.status(401).json({ error: 'Unauthorized' });
+  if (req.users.role !== role) return res.status(403).json({ error: 'Forbidden: insufficient role' });
   next();
 };
 

@@ -14,7 +14,7 @@ router.post('/register', async (req, res, next) => {
     if (!name || !email || !password) return res.status(400).json({ error: 'name, email, password required' });
 
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-    const q = `INSERT INTO students (name, email, password, role) VALUES ($1,$2,$3,$4) RETURNING id, name, email, role`;
+    const q = `INSERT INTO users (name, email, password, role) VALUES ($1,$2,$3,$4) RETURNING id, name, email, role`;
     const vals = [name, email.toLowerCase(), hashed, role || 'student'];
     const { rows } = await db.query(q, vals);
     res.status(201).json({ user: rows[0], message: 'Registration successful' });
@@ -30,18 +30,18 @@ router.post('/login', async (req, res, next) => {
     const { email, password, role } = req.body;
     if (!email || !password || !role) return res.status(400).json({ error: 'email, password and role required' });
 
-    const q = `SELECT id, name, email, password, role FROM students WHERE email=$1`;
+    const q = `SELECT id, name, email, password, role FROM users WHERE email=$1`;
     const { rows } = await db.query(q, [email.toLowerCase()]);
     if (!rows.length) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const user = rows[0];
-    const ok = await bcrypt.compare(password, user.password);
+    const users = rows[0];
+    const ok = await bcrypt.compare(password, users.password);
     if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const payload = { id: user.id, email: user.email, role: user.role };
+    const payload = { id: users.id, email: users.email, role: users.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '8h' });
 
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } , message: 'Login successful' });
+    res.json({ token, user: { id: users.id, name: users.name, email: users.email, role: users.role } , message: 'Login successful' });
   } catch (err) {
     next(err);
   }

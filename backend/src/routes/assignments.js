@@ -11,7 +11,7 @@ router.post('/create-assignment', verifyToken, requireRole('admin'), async (req,
 
     const q = `INSERT INTO assignments (title, description, due_date, onedrive_link, assigned_by)
                VALUES ($1,$2,$3,$4,$5) RETURNING *`;
-    const vals = [title, description || null, due_date || null, onedrive_link || null, req.user.id];
+    const vals = [title, description || null, due_date || null, onedrive_link || null, req.users.id];
     const { rows } = await db.query(q, vals);
     res.status(201).json({ assignment: rows[0] });
   } catch (err) {
@@ -36,7 +36,7 @@ router.put('/edit-assignment/:id', verifyToken, requireRole('admin'), async (req
 
 router.get('/get-assignments-for-student', verifyToken, async (req, res, next) => {
   try {
-    const studentId = req.user.id;
+    const studentId = req.users.id;
 
     const q = `
       SELECT 
@@ -55,7 +55,7 @@ router.get('/get-assignments-for-student', verifyToken, async (req, res, next) =
       JOIN group_assignments ga ON ga.assignment_id = a.id
       JOIN groups_table g ON g.id = ga.group_id
       JOIN group_members gm ON gm.group_id = g.id
-      WHERE gm.student_id = $1
+      WHERE gm.users_id = $1
       ORDER BY a.due_date NULLS LAST, a.created_at DESC
     `;
 
@@ -98,12 +98,12 @@ router.post('/assign-assignment/:assignmentId', verifyToken, async (req, res) =>
 //     const { group_id, confirm } = req.body;
 //     if (!group_id) return res.status(400).json({ error: 'group_id required' });
 
-//     // ensure user is a member of the group OR group creator
+//     // ensure users is a member of the group OR group creator
 //     const membership = await db.query(
-//       `SELECT 1 FROM group_members WHERE group_id=$1 AND student_id=$2
+//       `SELECT 1 FROM group_members WHERE group_id=$1 AND users_id=$2
 //        UNION
 //        SELECT 1 FROM groups_table WHERE id=$1 AND created_by=$2`,
-//       [group_id, req.user.id]
+//       [group_id, req.users.id]
 //     );
 //     if (!membership.rows.length) return res.status(403).json({ error: 'Not a member of this group' });
 
