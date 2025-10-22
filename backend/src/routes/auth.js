@@ -27,8 +27,8 @@ router.post('/register', async (req, res, next) => {
 // Login
 router.post('/login', async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'email and password required' });
+    const { email, password, role } = req.body;
+    if (!email || !password || !role) return res.status(400).json({ error: 'email, password and role required' });
 
     const q = `SELECT id, name, email, password, role FROM students WHERE email=$1`;
     const { rows } = await db.query(q, [email.toLowerCase()]);

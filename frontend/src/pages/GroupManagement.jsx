@@ -13,17 +13,17 @@ const GroupManagement = () => {
   }, [token]);
 
   const fetchGroups = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/groups/get-groups-by-user`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to fetch groups");
-        setGroups(data?.groups || []);
-      } catch (err) {
-        alert(err.message);
-      }
-    };
+    try {
+      const res = await fetch(`${apiUrl}/groups/get-groups-by-user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to fetch groups");
+      setGroups(data?.groups || []);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   const handleCreateGroup = async () => {
     if (!groupName) return alert("Enter a group name");

@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 
 // Using Pool is preferred for connection management
 const pool = new Pool({
-  user: 'nithinambati',
+  user: 'vamshiambati',
   host: 'localhost',
   database: 'joineazy',
   password: 'my_password',

@@ -6,6 +6,7 @@ const db = require('./src/db');
 const authRoutes = require('./src/routes/auth');
 const groupRoutes = require('./src/routes/groups');
 const assignmentRoutes = require('./src/routes/assignments');
+// const dashboardRoutes = require('./src/routes/dashboard');
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,7 @@ app.get('/db-check', async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+// app.use("/api/dashboard", dashboardRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/assignments', assignmentRoutes);
 

@@ -4,6 +4,7 @@ import apiUrl from "../apiUrl"
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -12,7 +13,7 @@ const Login = () => {
       const res = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Invalid credentials");
@@ -23,7 +24,7 @@ const Login = () => {
         ? navigate("/student/dashboard")
         : navigate("/admin/dashboard");
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
     }
   };
 
@@ -52,6 +53,14 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <select
+          className="w-full border mb-4 p-2 rounded"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        >
+          <option value="student">Student</option>
+          <option value="admin">Professor</option>
+        </select>
         <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105">
           Login
         </button>
