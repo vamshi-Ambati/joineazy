@@ -18,8 +18,8 @@ const Login = () => {
       if (!res.ok) throw new Error(data.message || "Invalid credentials");
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      data.role === "student"
+      localStorage.setItem("role", data?.user?.role);
+      data?.user?.role === "student"
         ? navigate("/student/dashboard")
         : navigate("/admin/dashboard");
     } catch (err) {
