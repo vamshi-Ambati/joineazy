@@ -1,7 +1,7 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const db = require('./src/db');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const db = require("./src/db");
 
 const authRoutes = require('./src/routes/auth');
 const groupRoutes = require('./src/routes/groups');
@@ -11,15 +11,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => res.json({ status: 'ok', message: 'Welcome to JoinEazy API' }));
+app.get("/", (req, res) =>
+  res.json({ status: "ok", message: "Welcome to JoinEazy API" })
+);
 
-app.get('/db-check', async (req, res) => {
+// DB check endpoint
+app.get("/db-check", async (req, res) => {
   try {
-    const result = await db.query('SELECT id, name, email, role, created_at FROM users');
-    res.json({ status: 'ok', users: result.rows, message: 'users fetched successfully' });
+    const result = await db.query('SELECT id, name, email, role, created_at FROM students');
+    res.json({ status: 'ok', students: result.rows, message: 'Students fetched successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ status: 'error', message: 'Server error' });
+    res.status(500).json({ status: "error", message: "Server error" });
   }
 });
 
@@ -28,7 +31,7 @@ app.use('/api/groups', groupRoutes);
 app.use('/api/assignments', assignmentRoutes);
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   db.connect();
   console.log(`Server running on port ${PORT}`);

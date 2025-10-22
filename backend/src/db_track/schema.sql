@@ -5,17 +5,18 @@ DROP TABLE IF EXISTS groups_table CASCADE;
 DROP TABLE IF EXISTS assignments CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
+-- students (also used for admins: role column)
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'student',
+  role TEXT NOT NULL DEFAULT 'student', -- 'student' or 'admin'
   created_at TIMESTAMP DEFAULT NOW()
 );
 
 INSERT INTO users (name, email, password, role)
-VALUES ('nithin', 'nithin@example.com', 'yourpassword', 'student');
+VALUES ('nithin', 'nithin@example.com', 'nithin', 'admin');
 
 
 CREATE TABLE groups_table (
@@ -25,12 +26,13 @@ CREATE TABLE groups_table (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- group_members (many-to-many: group <-> student)
 CREATE TABLE group_members (
   group_id INTEGER REFERENCES groups_table(id) ON DELETE CASCADE,
-  users_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  student_id INTEGER REFERENCES students(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT NOW(),
-  created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
-  PRIMARY KEY (group_id, users_id)
+  created_by INTEGER REFERENCES students(id) ON DELETE SET NULL,
+  PRIMARY KEY (group_id, student_id)
 );
 
 CREATE TABLE assignments (
@@ -39,7 +41,7 @@ CREATE TABLE assignments (
   description TEXT,
   due_date DATE,
   onedrive_link TEXT,
-  created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  created_by INTEGER REFERENCES students(id) ON DELETE SET NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -54,6 +56,6 @@ CREATE TABLE group_assignments (
   created_by INTEGER REFERENCES users(id) ON DELETE SET NULL
 );
 
--- sample index for faster lookups
+-- sample index for performance
 CREATE INDEX idx_group_assignments_group ON group_assignments(group_id);
 CREATE INDEX idx_group_assignments_assignment ON group_assignments(assignment_id);
