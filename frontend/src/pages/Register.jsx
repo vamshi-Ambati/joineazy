@@ -18,7 +18,7 @@ const Register = () => {
       });
       if (!res.ok) throw new Error((await res.json()).message || "Failed");
       alert("Registered successfully");
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       alert(err.message);
     }
