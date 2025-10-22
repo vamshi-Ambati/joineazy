@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'No token provided' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-    if (err) return res.status(403).json({ error: 'Invalid token' });
+    if (err) return res.status(400).json({ error: 'UnAuthorized Access' });
     req.user = payload; // { id, email, role }
     next();
   });
